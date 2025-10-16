@@ -1,0 +1,40 @@
+# Bytecode caches
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Logs & coverage
+*.log
+*.coverage
+coverage.xml
+htmlcov/
+
+# Test artifacts
+.pytest_cache/
+.tox/
+
+# Editor & OS cruft
+.vscode/
+.idea/
+*.iml
+.DS_Store
+Thumbs.db
+
+# Codex / MCP
+.codex/
+.codex_sessions/
+.serena/
+
+# Local builds & exports
+build/
+dist/
+
+# Python packaging
+*.egg-info/
+.eggs/
+
