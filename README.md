@@ -1,6 +1,6 @@
 # ComfyUI Temporal Mask Tools
 
-Utility collection for ComfyUI focused on stabilizing per-frame segmentation masks.
+Utility collection of ComfyUI V3 nodes for stabilizing temporal segmentation masks while staying deterministic and torch-only.
 
 ## Nodes
 
@@ -17,12 +17,19 @@ Combines nearby frames in a temporal mask sequence to suppress flicker.
 
 **Output**: `mask_batch_out` — mask tensor with original shape restored.
 
+### Temporal Mask Fill Gaps (`TemporalMaskFillGaps`)
+Removes short-lived activations and fills brief inactive spans so the mask stays continuous from frame to frame. It first prunes active runs shorter than `min_duration`, then fills gaps no longer than `max_gap_frames` by holding the last active frame forward to cover detection dropouts.
+
+| Input | Type | Default | Notes |
+| --- | --- | --- | --- |
+| `mask_batch` | MASK | required | Accepts `(frames, H, W)`, `(batch, frames, H, W)`, or `(H, W)` tensors. |
+| `max_gap_frames` | INT | 3 | Maximum inactive span that will be filled. |
+| `min_duration` | INT | 2 | Minimum length of an activation to keep. |
+| `debug_output` | BOOL | False | Prints node parameters for quick verification. |
+
+**Output**: `mask_batch_out` — mask tensor with short gaps filled while preserving input shape.
+
 ## Usage
 1. Clone into `ComfyUI/custom_nodes` and restart ComfyUI.
-2. Drop `Temporal Mask Union` into your graph and point it at a mask sequence batch.
+2. Drop the desired node into your graph and connect it to a mask sequence batch.
 3. Optional: enable `debug_output` when tuning parameters; disable for production runs.
-
-## Roadmap / TODO
-- Implement `Temporal Mask Fill Gaps`.
-- Implement `Temporal Mask Denoise`.
-- Add automated tests under `tests/nodes/` once additional nodes land.
