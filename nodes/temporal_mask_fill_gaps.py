@@ -9,7 +9,6 @@ from torch import Tensor
 from comfy_api.latest import io
 
 CATEGORY: Final[str] = "TemporalMask/Operations"
-_VALID_INTERPOLATIONS: Final[set[str]] = {"hold", "linear"}
 
 
 def _ensure_batch_time_shape(mask: Tensor) -> tuple[Tensor, tuple[int, ...]]:
@@ -55,18 +54,28 @@ def _compute_segment_bounds(mask_bool: Tensor) -> tuple[Tensor, Tensor, Tensor]:
     ends = torch.full((batch, frames, features), -1, dtype=torch.int64, device=device)
 
     current_start = torch.full((batch, features), -1, dtype=torch.int64, device=device)
+    neg_one = torch.full((batch, features), -1, dtype=torch.int64, device=device)
     for idx in range(frames):
         active = mask_bool[:, idx, :]
-        current_start = torch.where(active & (current_start < 0), time_indices[idx], current_start)
-        starts[:, idx, :] = torch.where(active, current_start, torch.full_like(current_start, -1))
-        current_start = torch.where(active, current_start, torch.full_like(current_start, -1))
+        current_start = torch.where(
+            active & (current_start < 0),
+            time_indices[idx],
+            current_start,
+        )
+        starts[:, idx, :] = torch.where(active, current_start, neg_one)
+        current_start = torch.where(~active, neg_one, current_start)
 
     current_end = torch.full((batch, features), -1, dtype=torch.int64, device=device)
+    neg_one_end = neg_one  # reuse allocation
     for idx in range(frames - 1, -1, -1):
         active = mask_bool[:, idx, :]
-        current_end = torch.where(active & (current_end < 0), time_indices[idx], current_end)
-        ends[:, idx, :] = torch.where(active, current_end, torch.full_like(current_end, -1))
-        current_end = torch.where(active, current_end, torch.full_like(current_end, -1))
+        current_end = torch.where(
+            active & (current_end < 0),
+            time_indices[idx],
+            current_end,
+        )
+        ends[:, idx, :] = torch.where(active, current_end, neg_one_end)
+        current_end = torch.where(~active, neg_one_end, current_end)
 
     lengths = torch.where(
         mask_bool,
@@ -103,7 +112,7 @@ def _compute_last_next_indices(mask_bool: Tensor) -> tuple[Tensor, Tensor]:
 
 
 class TemporalMaskFillGaps(io.ComfyNode):
-    """Fill short inactive spans between active mask segments."""
+    """Fill short inactive spans between active mask segments using hold interpolation."""
 
     RELATIVE_PYTHON_MODULE: Final[str] = "nodes"
 
@@ -113,7 +122,7 @@ class TemporalMaskFillGaps(io.ComfyNode):
             node_id="TemporalMaskFillGaps",
             display_name="Temporal Mask Fill Gaps",
             category=CATEGORY,
-            description="Fill short gaps between active mask segments using hold or linear interpolation.",
+            description="Fill short gaps between active mask segments using hold interpolation.",
             inputs=[
                 io.Mask.Input("mask_batch", display_name="Mask Sequence"),
                 io.Int.Input(
@@ -124,13 +133,6 @@ class TemporalMaskFillGaps(io.ComfyNode):
                     step=1,
                     display_name="Max Gap Frames",
                     tooltip="Inactive span (frames) eligible for filling.",
-                ),
-                io.Combo.Input(
-                    "interpolation",
-                    options=sorted(_VALID_INTERPOLATIONS),
-                    default="hold",
-                    display_name="Interpolation",
-                    tooltip="'hold' copies the previous active frame; 'linear' blends last/next.",
                 ),
                 io.Int.Input(
                     "min_duration",
@@ -155,7 +157,6 @@ class TemporalMaskFillGaps(io.ComfyNode):
     def validate_inputs(
         cls,
         max_gap_frames: int,
-        interpolation: str,
         min_duration: int,
         **_: dict,
     ) -> bool | str:
@@ -163,8 +164,6 @@ class TemporalMaskFillGaps(io.ComfyNode):
             return "max_gap_frames must be non-negative"
         if min_duration < 1:
             return "min_duration must be at least 1"
-        if interpolation not in _VALID_INTERPOLATIONS:
-            return "interpolation must be 'hold' or 'linear'"
         return True
 
     @classmethod
@@ -172,7 +171,6 @@ class TemporalMaskFillGaps(io.ComfyNode):
         cls,
         mask_batch: Tensor,
         max_gap_frames: int,
-        interpolation: str,
         min_duration: int,
         debug_output: bool,
     ) -> io.NodeOutput:
@@ -185,8 +183,10 @@ class TemporalMaskFillGaps(io.ComfyNode):
         mask_bool_flat = mask_bool.reshape(batch, frames, features)
 
         if min_duration > 1:
-            segment_lengths, _, _ = _compute_segment_bounds(mask_bool_flat)
-            mask_bool_flat = mask_bool_flat & (segment_lengths >= min_duration)
+            segment_lengths, segment_starts, segment_ends = _compute_segment_bounds(mask_bool_flat)
+            mask_bool_flat = mask_bool_flat & (
+                (segment_ends - segment_starts + 1) >= min_duration
+            )
 
         mask_bool_filtered = mask_bool_flat
 
@@ -200,9 +200,6 @@ class TemporalMaskFillGaps(io.ComfyNode):
         if max_gap_frames > 0:
             last_idx, next_idx = _compute_last_next_indices(mask_bool_filtered)
             gap_sizes = next_idx - last_idx - 1
-
-            frame_indices = torch.arange(frames, dtype=torch.int64, device=mask_values.device)
-            frame_indices = frame_indices.view(1, frames, 1)
 
             fill_positions = (
                 ~mask_bool_filtered
@@ -218,20 +215,7 @@ class TemporalMaskFillGaps(io.ComfyNode):
                     dim=1,
                     index=last_idx.clamp(min=0),
                 )
-                gather_next = torch.gather(
-                    mask_values,
-                    dim=1,
-                    index=next_idx.clamp(max=frames - 1).clamp(min=0),
-                )
-
-                if interpolation == "linear":
-                    total_dist = (next_idx - last_idx).clamp(min=1).to(result_values.dtype)
-                    dist_from_last = (frame_indices - last_idx).to(result_values.dtype)
-                    alpha = dist_from_last / total_dist
-                    fill_values = (1.0 - alpha) * gather_last + alpha * gather_next
-                else:
-                    fill_values = gather_last
-
+                fill_values = gather_last
                 result_values = torch.where(fill_positions, fill_values, result_values)
                 mask_bool_filtered = mask_bool_filtered | fill_positions
 
@@ -249,7 +233,6 @@ class TemporalMaskFillGaps(io.ComfyNode):
                 "[TemporalMaskFillGaps] debug:",
                 f"shape={tuple(original_shape)}",
                 f"max_gap={max_gap_frames}",
-                f"interpolation={interpolation}",
                 f"min_duration={min_duration}",
             )
 

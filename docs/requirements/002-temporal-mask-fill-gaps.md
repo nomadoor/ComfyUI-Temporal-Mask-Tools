@@ -15,7 +15,6 @@ Fill short gaps (≤ N frames) between active mask segments to ensure temporal c
 |------|------|-----------|----------|-------------|
 | mask_batch | MASK | Yes | — | Input temporal mask sequence |
 | max_gap_frames | INT | No | 3 | Maximum gap to fill |
-| interpolation | STRING | No | "hold" | Fill strategy ("hold"/"linear") |
 | min_duration | INT | No | 2 | Minimum valid segment length |
 | debug_output | BOOL | No | False | Debug visualization mask |
 
@@ -26,7 +25,7 @@ Fill short gaps (≤ N frames) between active mask segments to ensure temporal c
 
 ## Processing Logic
 1. Detect inactive spans shorter than `max_gap_frames`.  
-2. If found, fill based on `interpolation`.  
+2. Fill gaps by holding the last active frame value.  
 3. Respect `min_duration` to avoid overfilling.  
 4. Return smoothed mask sequence.
 
