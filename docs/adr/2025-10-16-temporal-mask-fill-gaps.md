@@ -6,7 +6,7 @@
 - We must stay compatible with ComfyUI V3 schema and avoid unsafe dependencies.
 
 ## Decision
-- Implemented `nodes/temporal_mask_fill_gaps_v3.py` with schema-compliant inputs/outputs.
+- Implemented `nodes/temporal_mask_fill_gaps.py` with schema-compliant inputs/outputs.
 - Normalize masks to `(batch, frames, height, width)` using shared helper functions and process per-pixel sequences on the GPU-friendly tensor path.
 - Remove active segments shorter than `min_duration` before filling and interpolate gaps up to `max_gap_frames` via either hold or linear strategies.
 - Update extension registry to expose both union and fill-gaps nodes.

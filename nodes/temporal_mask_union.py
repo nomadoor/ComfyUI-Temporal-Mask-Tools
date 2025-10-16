@@ -1,4 +1,4 @@
-"""Temporal Mask Union node implementation for ComfyUI V3."""
+"""Temporal Mask Union node implementation for ComfyUI."""
 from __future__ import annotations
 
 from typing import Final
@@ -7,7 +7,7 @@ import torch
 from torch import Tensor
 
 from comfy_api.latest import ComfyExtension, io
-from .temporal_mask_fill_gaps_v3 import TemporalMaskFillGaps
+from .temporal_mask_fill_gaps import TemporalMaskFillGaps
 
 CATEGORY: Final[str] = "TemporalMask/Operations"
 

@@ -1,4 +1,4 @@
-"""Temporal Mask Fill Gaps node implementation for ComfyUI V3."""
+"""Temporal Mask Fill Gaps node implementation for ComfyUI."""
 from __future__ import annotations
 
 from typing import Final
