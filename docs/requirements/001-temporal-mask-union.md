@@ -14,7 +14,7 @@ Combine nearby temporal mask frames using logical OR or majority voting to stabi
 ## Inputs
 | Name | Type | Required | Default | Description |
 |------|------|-----------|----------|-------------|
-| mask_batch | MASK | Yes | — | Input temporal mask sequence |
+| mask_batch | MASK | Yes |  E| Input temporal mask sequence |
 | radius | INT | No | 2 | Frame range for merging |
 | mode | STRING | No | "or" | Merge mode ("or" / "majority") |
 | threshold | INT | No | 3 | Frame count threshold |
@@ -27,8 +27,8 @@ Combine nearby temporal mask frames using logical OR or majority voting to stabi
 
 ## Processing Logic
 1. For each frame, aggregate neighbor masks within ±radius.  
-2. If `mode="or"` → union of all masks.  
-3. If `mode="majority"` → pixel active if ≥ `threshold` frames are active.  
+2. If `mode="or"` ↁEunion of all masks.  
+3. If `mode="majority"` ↁEpixel active if ≥ `threshold` frames are active.  
 4. Return batched mask tensor.
 
 ## Dependencies
@@ -38,9 +38,9 @@ Combine nearby temporal mask frames using logical OR or majority voting to stabi
 
 ## Test Cases
 ### TC-001: OR mode
-Input: radius=1, mode="or" → Expect union across neighbors  
+Input: radius=1, mode="or" ↁEExpect union across neighbors  
 ### TC-002: Majority mode
-Input: threshold=3 → Expect tighter filtering  
+Input: threshold=3 ↁEExpect tighter filtering  
 ### TC-003: Single frame
 Expect unchanged output  
 
@@ -51,3 +51,6 @@ Expect unchanged output
 - [ ] No unsafe imports  
 - [ ] Test coverage complete  
 - [ ] ADR created if logic modified  
+
+
+

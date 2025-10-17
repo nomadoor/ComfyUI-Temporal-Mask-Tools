@@ -6,8 +6,7 @@ from typing import Final
 import torch
 from torch import Tensor
 
-from comfy_api.latest import ComfyExtension, io
-from .temporal_mask_fill_gaps import TemporalMaskFillGaps
+from comfy_api.latest import io
 
 CATEGORY: Final[str] = "TemporalMask/Operations"
 
@@ -98,15 +97,9 @@ class TemporalMaskUnion(io.ComfyNode):
                     display_name="Threshold",
                     tooltip="Frames within the window that must be active when using majority mode.",
                 ),
-                io.Boolean.Input(
-                    "debug_output",
-                    default=False,
-                    display_name="Debug Output",
-                    tooltip="Reserved for future visualization outputs.",
-                ),
             ],
             outputs=[
-                io.Mask.Output("mask_batch_out", display_name="Mask Sequence"),
+                io.Mask.Output("mask_batch_out", display_name="Mask Batch"),
             ],
         )
 
@@ -130,7 +123,6 @@ class TemporalMaskUnion(io.ComfyNode):
         radius: int,
         mode: str,
         threshold: int,
-        debug_output: bool,
     ) -> io.NodeOutput:
         normalized_mode = _validate_mode(mode)
         mask_normalized, original_shape = _ensure_batch_time_shape(mask_batch)
@@ -152,23 +144,6 @@ class TemporalMaskUnion(io.ComfyNode):
         merged_bool = merged_flat.transpose(1, 2).contiguous().reshape(batch, frames, height, width)
         merged = merged_bool.to(mask_normalized.dtype)
         merged = _restore_shape(merged, original_shape)
-
-        if debug_output:
-            print(
-                "[TemporalMaskUnion] debug:",
-                f"shape={tuple(original_shape)}",
-                f"radius={radius}",
-                f"mode={normalized_mode}",
-                f"threshold={threshold}",
-            )
-
         return io.NodeOutput(merged)
 
 
-class TemporalMaskToolsExtension(ComfyExtension):
-    async def get_node_list(self) -> list[type[io.ComfyNode]]:
-        return [TemporalMaskUnion, TemporalMaskFillGaps]
-
-
-async def comfy_entrypoint() -> ComfyExtension:
-    return TemporalMaskToolsExtension()
