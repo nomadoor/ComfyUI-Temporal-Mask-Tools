@@ -1,7 +1,7 @@
 import pytest
 import torch
 
-from comfy_api.latest import io  # noqa: F401  # required for node registration
+from comfy_api.latest import io  # required for node registration
 
 pytest.importorskip("numpy")
 pytest.importorskip("cv2")
@@ -63,4 +63,5 @@ def test_small_connected_component_removed():
     ).mask_batch_out
 
     assert output.sum() == 0
+
 
