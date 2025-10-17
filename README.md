@@ -2,6 +2,16 @@
 
 Utility collection of ComfyUI V3 nodes for stabilizing temporal segmentation masks while staying deterministic and torch-only.
 
+## Sample Videos
+
+| Original Video | Detection (Florence-2) |
+| --- | --- |
+| <video src="docs/demo/sample_video.mp4" loop autoplay muted controls width="320"></video> | <video src="docs/demo/mask_sample.mp4" loop autoplay muted controls width="320"></video> |
+
+| After Union | After Remove Short Objects |
+| --- | --- |
+| <video src="docs/demo/w_TemporalMaskUnion.mp4" loop autoplay muted controls width="320"></video> | <video src="docs/demo/w_TemporalMaskRemoveShortObjects.mp4" loop autoplay muted controls width="320"></video> |
+
 ## Nodes
 
 ### Temporal Mask Union (`TemporalMaskUnion`)
@@ -14,7 +24,7 @@ Combines nearby frames in a temporal mask sequence to suppress flicker.
 | `mode` | STRING | `"or"` | `"or"` keeps any active frame, `"majority"` uses the threshold. |
 | `threshold` | INT | 3 | Minimum active frames within the window when `mode="majority"`. |
 
-**Output**: `mask_batch` ? mask tensor with original shape restored.
+**Output**: `mask_batch_out` - mask tensor with original shape restored.
 
 ### Temporal Mask Remove Short Objects (`TemporalMaskRemoveShortObjects`)
 Drops one-frame flicker or tiny specks by combining per-frame connected-component filtering with temporal run-length pruning.
@@ -25,7 +35,7 @@ Drops one-frame flicker or tiny specks by combining per-frame connected-componen
 | `min_duration` | INT | 2 | Minimum consecutive frames required to keep a pixel active. |
 | `min_area_pixels` | INT | 10 | Connected components smaller than this pixel count are removed. |
 
-**Output**: `mask_batch`  Emask tensor with transient or tiny activations removed.
+**Output**: `mask_batch_out` - mask tensor with transient or tiny activations removed.
 
 ## Usage
 1. Clone into `ComfyUI/custom_nodes` and restart ComfyUI.
