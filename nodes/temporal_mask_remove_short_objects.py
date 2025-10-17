@@ -73,7 +73,7 @@ def _prune_duration(mask_bool: Tensor, min_duration: int) -> Tensor:
     if min_duration <= 1:
         return mask_bool
     batch, frames, height, width = mask_bool.shape
-    flat = mask_bool.view(batch, frames, -1)
+    flat = mask_bool.reshape(batch, frames, -1)
     lengths = torch.zeros_like(flat, dtype=torch.int32)
     running = torch.zeros((batch, flat.shape[2]), dtype=torch.int32, device=mask_bool.device)
     for t in range(frames):
@@ -86,7 +86,7 @@ def _prune_duration(mask_bool: Tensor, min_duration: int) -> Tensor:
         running = torch.where(active, running + 1, torch.zeros_like(running))
         lengths[:, t, :] += running - 1
     keep = lengths >= min_duration
-    return (flat & keep).view(batch, frames, height, width)
+    return (flat & keep).reshape(batch, frames, height, width)
 
 
 class TemporalMaskRemoveShortObjects(io.ComfyNode):
