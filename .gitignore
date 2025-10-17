@@ -38,3 +38,6 @@ dist/
 *.egg-info/
 .eggs/
 
+
+# local demo videos
+docs/demo/*.mp4
