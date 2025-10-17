@@ -6,11 +6,11 @@ Utility collection of ComfyUI V3 nodes for stabilizing temporal segmentation mas
 
 | Original Video | Detection (Florence-2) |
 | --- | --- |
-| <video src="docs/demo/sample_video.mp4" loop autoplay muted controls width="320"></video> | <video src="docs/demo/mask_sample.mp4" loop autoplay muted controls width="320"></video> |
+| <video src="https://github.com/nomadoor/ComfyUI-Temporal-Mask-Tools/raw/refs/heads/main/docs/demo/sample_video.mp4" loop autoplay muted controls width="320"></video> | <video src="https://github.com/nomadoor/ComfyUI-Temporal-Mask-Tools/raw/refs/heads/main/docs/demo/mask_sample.mp4" loop autoplay muted controls width="320"></video> |
 
 | After Union | After Remove Short Objects |
 | --- | --- |
-| <video src="docs/demo/w_TemporalMaskUnion.mp4" loop autoplay muted controls width="320"></video> | <video src="docs/demo/w_TemporalMaskRemoveShortObjects.mp4" loop autoplay muted controls width="320"></video> |
+| <video src="https://github.com/nomadoor/ComfyUI-Temporal-Mask-Tools/raw/refs/heads/main/docs/demo/w_TemporalMaskUnion.mp4" loop autoplay muted controls width="320"></video> | <video src="https://github.com/nomadoor/ComfyUI-Temporal-Mask-Tools/raw/refs/heads/main/docs/demo/w_TemporalMaskRemoveShortObjects.mp4" loop autoplay muted controls width="320"></video> |
 
 ## Nodes
 
@@ -41,6 +41,7 @@ Drops one-frame flicker or tiny specks by combining per-frame connected-componen
 1. Clone into `ComfyUI/custom_nodes` and restart ComfyUI.
 2. Drop the desired node into your graph and connect it to a mask sequence batch.
 3. Optional: enable node-level `debug_output` (when available) while tuning parameters.
+
 
 
 
