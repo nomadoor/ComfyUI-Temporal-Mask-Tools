@@ -1,0 +1,418 @@
+{
+  "id": "4fb04ca7-9fb7-4c7d-a1ad-f39396a6c7fb",
+  "revision": 0,
+  "last_node_id": 58,
+  "last_link_id": 94,
+  "nodes": [
+    {
+      "id": 48,
+      "type": "DownloadAndLoadFlorence2Model",
+      "pos": [
+        -2215.560757323344,
+        657.684841137039
+      ],
+      "size": [
+        273.64904347786944,
+        130
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "lora",
+          "shape": 7,
+          "type": "PEFTLORA",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "florence2_model",
+          "type": "FL2MODEL",
+          "links": [
+            76
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfyui-florence2",
+        "ver": "1.0.6",
+        "Node name for S&R": "DownloadAndLoadFlorence2Model"
+      },
+      "widgets_values": [
+        "microsoft/Florence-2-base-ft",
+        "fp16",
+        "sdpa",
+        false
+      ],
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 13,
+      "type": "MaskPreview",
+      "pos": [
+        -1169.7109709770345,
+        136.01583579402507
+      ],
+      "size": [
+        321.7651672433677,
+        376.7972318339098
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 11
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.3.65",
+        "Node name for S&R": "MaskPreview"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 17,
+      "type": "MaskPreview",
+      "pos": [
+        -1172.0319218802726,
+        601.5133292098935
+      ],
+      "size": [
+        321.7651672433677,
+        376.7972318339098
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 58
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.3.65",
+        "Node name for S&R": "MaskPreview"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 46,
+      "type": "Florence2Run",
+      "pos": [
+        -1892.0683203540225,
+        136.01583579402507
+      ],
+      "size": [
+        335.8159567386392,
+        364
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 75
+        },
+        {
+          "name": "florence2_model",
+          "type": "FL2MODEL",
+          "link": 76
+        }
+      ],
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": []
+        },
+        {
+          "name": "mask",
+          "type": "MASK",
+          "links": [
+            78,
+            79
+          ]
+        },
+        {
+          "name": "caption",
+          "type": "STRING",
+          "links": null
+        },
+        {
+          "name": "data",
+          "type": "JSON",
+          "links": null
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfyui-florence2",
+        "ver": "1.0.6",
+        "Node name for S&R": "Florence2Run"
+      },
+      "widgets_values": [
+        "standing human",
+        "caption_to_phrase_grounding",
+        true,
+        false,
+        1024,
+        3,
+        true,
+        "",
+        1234,
+        "fixed"
+      ],
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 2,
+      "type": "VHS_LoadVideo",
+      "pos": [
+        -2215.560757323344,
+        136.01583579402507
+      ],
+      "size": [
+        270.3914155275627,
+        465.2207583575454
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "meta_batch",
+          "shape": 7,
+          "type": "VHS_BatchManager",
+          "link": null
+        },
+        {
+          "name": "vae",
+          "shape": 7,
+          "type": "VAE",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            75
+          ]
+        },
+        {
+          "name": "frame_count",
+          "type": "INT",
+          "links": null
+        },
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "links": null
+        },
+        {
+          "name": "video_info",
+          "type": "VHS_VIDEOINFO",
+          "links": []
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfyui-videohelpersuite",
+        "ver": "1.7.7",
+        "Node name for S&R": "VHS_LoadVideo"
+      },
+      "widgets_values": {
+        "video": "13028231_1920_1080_60fps.mp4",
+        "force_rate": 30,
+        "custom_width": 832,
+        "custom_height": 0,
+        "frame_load_cap": 81,
+        "skip_first_frames": 0,
+        "select_every_nth": 1,
+        "format": "Wan",
+        "choose video to upload": "image",
+        "videopreview": {
+          "hidden": false,
+          "paused": false,
+          "params": {
+            "force_rate": 30,
+            "custom_width": 832,
+            "custom_height": 0,
+            "frame_load_cap": 81,
+            "skip_first_frames": 0,
+            "select_every_nth": 1,
+            "filename": "13028231_1920_1080_60fps.mp4",
+            "type": "input",
+            "format": "video/mp4"
+          }
+        }
+      }
+    },
+    {
+      "id": 1,
+      "type": "TemporalMaskUnion",
+      "pos": [
+        -1503.1513421736242,
+        136.01583579402507
+      ],
+      "size": [
+        266.7364045799309,
+        106
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "mask_batch",
+          "type": "MASK",
+          "link": 78
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Mask Batch",
+          "type": "MASK",
+          "links": [
+            11
+          ]
+        }
+      ],
+      "properties": {
+        "aux_id": "nomadoor/ComfyUI-Temporal-Mask-Tools",
+        "ver": "871cc4426664194b76cfa73f7a83e309e59f422b",
+        "Node name for S&R": "TemporalMaskUnion"
+      },
+      "widgets_values": [
+        2,
+        "or",
+        3
+      ],
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 39,
+      "type": "TemporalMaskRemoveShortObjects",
+      "pos": [
+        -1503.1513421736242,
+        601.5133292098935
+      ],
+      "size": [
+        299.94233390316015,
+        82
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "mask_batch",
+          "type": "MASK",
+          "link": 79
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Mask Batch",
+          "type": "MASK",
+          "links": [
+            58
+          ]
+        }
+      ],
+      "properties": {
+        "aux_id": "nomadoor/ComfyUI-Temporal-Mask-Tools",
+        "ver": "b7e5e10b3e0d8f25da456999981c66479107e3bc",
+        "Node name for S&R": "TemporalMaskRemoveShortObjects"
+      },
+      "widgets_values": [
+        3,
+        0
+      ],
+      "color": "#232",
+      "bgcolor": "#353"
+    }
+  ],
+  "links": [
+    [
+      11,
+      1,
+      0,
+      13,
+      0,
+      "MASK"
+    ],
+    [
+      58,
+      39,
+      0,
+      17,
+      0,
+      "MASK"
+    ],
+    [
+      75,
+      2,
+      0,
+      46,
+      0,
+      "IMAGE"
+    ],
+    [
+      76,
+      48,
+      0,
+      46,
+      1,
+      "FL2MODEL"
+    ],
+    [
+      78,
+      46,
+      1,
+      1,
+      0,
+      "MASK"
+    ],
+    [
+      79,
+      46,
+      1,
+      39,
+      0,
+      "MASK"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.8356650798385149,
+      "offset": [
+        2340.8745978481575,
+        4.593664503684039
+      ]
+    },
+    "frontendVersion": "1.28.6",
+    "VHS_latentpreview": false,
+    "VHS_latentpreviewrate": 0,
+    "VHS_MetadataImage": true,
+    "VHS_KeepIntermediate": true
+  },
+  "version": 0.4
+}
