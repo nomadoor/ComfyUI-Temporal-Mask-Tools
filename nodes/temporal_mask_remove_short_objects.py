@@ -151,7 +151,7 @@ class TemporalMaskRemoveShortObjects(io.ComfyNode):
         area_filtered = _prune_area(mask_bool, min_area_pixels)
         duration_filtered = _prune_duration(area_filtered, min_duration)
 
-        result = duration_filtered.to(dtype=mask_norm.dtype)
+        result = _finalize_dtype(duration_filtered, mask_norm)
         result = _restore_shape(result, orig_shape)
 
         return io.NodeOutput(result)
