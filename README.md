@@ -6,11 +6,12 @@ Utility collection of ComfyUI V3 nodes for stabilizing temporal segmentation mas
 
 | Original Video | Detection (Florence-2) |
 | --- | --- |
-| <video src="https://github.com/nomadoor/ComfyUI-Temporal-Mask-Tools/raw/refs/heads/main/docs/demo/sample_video.mp4" loop autoplay muted controls width="320"></video> | <video src="https://github.com/nomadoor/ComfyUI-Temporal-Mask-Tools/raw/refs/heads/main/docs/demo/mask_sample.mp4" loop autoplay muted controls width="320"></video> |
+| --- | ![mask_sample](https://github.com/user-attachments/assets/9199ba8c-2ee2-4e41-a62e-f2d8a59c5420) |
 
 | After Union | After Remove Short Objects |
 | --- | --- |
-| <video src="https://github.com/nomadoor/ComfyUI-Temporal-Mask-Tools/raw/refs/heads/main/docs/demo/w_TemporalMaskUnion.mp4" loop autoplay muted controls width="320"></video> | <video src="https://github.com/nomadoor/ComfyUI-Temporal-Mask-Tools/raw/refs/heads/main/docs/demo/w_TemporalMaskRemoveShortObjects.mp4" loop autoplay muted controls width="320"></video> |
+| ![mask_union](https://github.com/user-attachments/assets/192159e3-a632-470f-ab7e-baf886fa5a4b) | ![mask_remove](https://github.com/user-attachments/assets/d0df0171-bc0a-40b4-ab46-0d3075ae9526) |
+
 
 ## Nodes
 
