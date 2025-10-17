@@ -41,3 +41,6 @@ dist/
 
 # local demo videos
 docs/demo/*.mp4
+
+# Ignore Comfy CLI package artifact
+node.zip
